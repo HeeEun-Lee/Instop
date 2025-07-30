@@ -1,0 +1,52 @@
+# === Gradle ===
+.gradle/
+**/build/
+
+# === Local Configuration ===
+local.properties
+.idea/
+*.iml
+*.hprof
+
+# === Log/Generated Files ===
+*.log
+*.xml~
+*.class
+*.jar
+*.war
+*.apk
+*.ap_
+
+# === OS Files ===
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# === Android Studio Specific ===
+.cxx/
+.externalNativeBuild/
+captures/
+outputs/
+.navigation/
+.metalava/
+
+# === Keystore / Secrets ===
+*.jks
+*.keystore
+.env
+secrets.properties
+
+# === Kotlin ===
+*.kotlin_module
+
+# === Jetpack Compose previews ===
+*.preview
+
+# === Crashlytics / Firebase ===
+crashlytics-build.properties
+firebase-app-id.json
+
+# === Node / Yarn (if used) ===
+node_modules/
+yarn.lock
+package-lock.json
