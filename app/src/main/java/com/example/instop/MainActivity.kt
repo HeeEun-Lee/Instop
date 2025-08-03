@@ -1,51 +1,3 @@
-//package com.example.instop
-//
-//import android.content.Context
-//import android.content.Intent
-//import android.provider.Settings
-//import android.os.Bundle
-//import android.widget.Button
-//import android.widget.TextView
-//import androidx.appcompat.app.AppCompatActivity
-//
-//class MainActivity : AppCompatActivity() {
-//
-//    private lateinit var usageText: TextView
-////    private val targetMinutes = 30 // 목표 시간 (분)
-//    private val targetMinutes = 1
-//
-//
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        setContentView(R.layout.activity_main)
-//
-//        usageText = findViewById(R.id.usageText)
-//
-//        // 권한이 없으면 사용 접근 설정으로 이동
-//        if (!hasUsageStatsPermission()) {
-//            startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
-//        }
-//
-//        // 사용 시간 측정
-//        val usageMillis = UsageStatsHelper.getInstagramUsageToday(this)
-//        val usageMinutes = usageMillis / 1000 / 60
-//        usageText.text = "오늘 인스타그램 사용 시간: ${usageMinutes}분"
-//
-//        if (usageMinutes >= targetMinutes) {
-//            NotificationHelper.showUsageLimitNotification(this)
-//        }
-//    }
-//
-//    private fun hasUsageStatsPermission(): Boolean {
-//        val appOps = getSystemService(Context.APP_OPS_SERVICE) as android.app.AppOpsManager
-//        val mode = appOps.checkOpNoThrow(
-//            "android:get_usage_stats",
-//            android.os.Process.myUid(), packageName
-//        )
-//        return mode == android.app.AppOpsManager.MODE_ALLOWED
-//    }
-//}
-
 package com.example.instop
 
 import android.content.Context
@@ -73,6 +25,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+//        val prefs = getSharedPreferences("GoalPrefs", Context.MODE_PRIVATE)
+//        val targetMinutes = prefs.getInt("target_minutes", 30) // 기본값 30
+//        val interval = prefs.getInt("notify_interval", 10)     // 기본값 10
+
 
         usageText = findViewById(R.id.usageText)
         brainImage = findViewById(R.id.brainImage)
@@ -102,12 +59,29 @@ class MainActivity : AppCompatActivity() {
 
         // 버튼 클릭 이벤트
         setGoalButton.setOnClickListener {
-            // TODO: 목표 시간 설정 다이얼로그 띄우기
+            val intent = Intent(this, GoalSettingActivity::class.java)
+            startActivity(intent)
         }
 
         openGroupButton.setOnClickListener {
             // TODO: 모임방 화면으로 이동
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        val prefs = getSharedPreferences("GoalPrefs", Context.MODE_PRIVATE)
+        val targetMinutes = prefs.getInt("target_minutes", 30)
+        val notifyInterval = prefs.getInt("notify_interval", 10)
+
+        goalText.text = "하루 목표 사용 시간 : ${targetMinutes}분"
+
+        val usageMillis = UsageStatsHelper.getInstagramUsageToday(this)
+        val usageMinutes = usageMillis / 1000 / 60
+        usageText.text = "현재 사용 시간\n${usageMinutes}분"
+
+        updateBrainImage(usageMinutes.toInt())
     }
 
     private fun updateBrainImage(minutes: Int) {
@@ -127,4 +101,6 @@ class MainActivity : AppCompatActivity() {
         )
         return mode == AppOpsManager.MODE_ALLOWED
     }
+
+
 }
